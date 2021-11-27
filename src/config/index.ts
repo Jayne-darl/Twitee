@@ -20,7 +20,7 @@ const baseConfig = {
   port: process.env.PORT || 5000,
   secrets: {
     jwt: process.env.JWT_SECRET,
-    JWT_EXP: process.env.JWT_EXP,
+    JwtExp: process.env.JWT_EXP,
   },
 };
 

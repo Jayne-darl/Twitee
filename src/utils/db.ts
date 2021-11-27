@@ -1,43 +1,20 @@
-import { Pool, QueryArrayConfig } from 'pg';
-import { config } from 'dotenv';
+import { config as dotenvConfig } from 'dotenv';
+import { Sequelize } from 'sequelize';
+import appConfig from '../config';
+dotenvConfig();
 
-config();
+// Option 1: Passing a connection URI
+export const sequelize = new Sequelize(appConfig.dbURL); // Example for postgres
 
-const databaseURL = process.env.NODE_ENV === 'test' ? process.env.DATABASE_TEST_URL : process.env.DATABASE_URL;
+export const connect = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
 
-const credentials = {
-  connectionString: databaseURL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-};
-
-const pool = new Pool(credentials);
-
-// pool.on('error', (err, client) => {
-//   console.error('Error:', err);
-// });
-
-pool.on('connect', () => console.log('Database is connected'));
-pool.on('error', () => console.error('Database connection Error'));
-
-// Connect with a connection pool.
-
-/**
- * DB Query
- * @param {object} req
- * @param {object} res
- * @returns {object} object
- */
-exports.query = (text: QueryArrayConfig<any>, params: any): object => {
-  return new Promise((resolve, reject) => {
-    pool
-      .query(text, params)
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+    await sequelize.sync();
+    return sequelize;
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+    throw new Error(error);
+  }
 };

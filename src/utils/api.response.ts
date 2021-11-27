@@ -8,7 +8,7 @@ type Data = {
   data?: any;
 };
 
-export const request_response = ({
+export const requestResponse = ({
   response,
   statusCode = 500,
   message = 'Internal Server Error. Please try again or contact Support',
