@@ -1,8 +1,7 @@
-import { compareSync } from 'bcrypt';
 import { Request, Response } from 'express';
 import { requestResponse } from '../../utils/api.response';
 import { User } from './user.model';
-import { comparePassword, getNameFromEmail, hashPassword, newToken } from './user.utils';
+import { comparePassword, getNameFromEmail, hashPassword, newToken, sendOnboardingMail } from './user.utils';
 
 export class UserController {
   static async signup(req: Request, response: Response) {
@@ -16,6 +15,8 @@ export class UserController {
 
       const token = newToken(data);
       data.token = token;
+
+      sendOnboardingMail(email);
       return requestResponse({ response, statusCode: 201, message: 'OK', data });
     } catch (error) {
       return requestResponse({ response });

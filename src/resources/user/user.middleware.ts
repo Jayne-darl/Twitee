@@ -20,7 +20,6 @@ export const validateAuth = async (req: Request, response: Response, next: NextF
 export const checkIfUserExists = async (req: Request, response: Response, next: NextFunction) => {
   try {
     const user = await User.findOne({ where: { email: req.body.email } });
-    console.log('useeeeeer', user);
 
     if (user) {
       return requestResponse({
