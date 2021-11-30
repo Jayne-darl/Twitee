@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { where } from 'sequelize/dist';
 import { requestResponse } from '../../utils/api.response';
 import { Twit } from './twit.model';
 
@@ -36,6 +37,24 @@ export class twitController {
         data: res,
       });
     } catch (error) {
+      return requestResponse({ response });
+    }
+  }
+  static async getOneTwit(req: Request, response: Response) {
+    try {
+      const res = await Twit.findOne({ where: { id: req.params.id } });
+      if (!res) {
+        return requestResponse({
+          response,
+          statusCode: 404,
+          message: 'No twit found',
+        });
+      }
+      const twit = res.toJSON();
+      return requestResponse({ response, statusCode: 200, message: 'OK', data: twit });
+    } catch (error) {
+      console.log('error', error);
+
       return requestResponse({ response });
     }
   }

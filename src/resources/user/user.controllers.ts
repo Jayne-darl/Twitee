@@ -27,6 +27,13 @@ export class UserController {
       const { email, password } = req.body;
       const res = await User.findOne({ where: { email } });
       const user = res?.toJSON();
+      if (!user) {
+        return requestResponse({
+          response,
+          statusCode: 404,
+          message: 'User not found',
+        });
+      }
       const match = comparePassword(user.password, password);
       if (!match) {
         return requestResponse({
